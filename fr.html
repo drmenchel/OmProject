@@ -1,1 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎮 Epic Game Collection</title>
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAADSo2NhQlgAANKjanVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNj...">
 
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 1s ease-out;
+    }
+
+    .header h1 {
+      font-size: 3.5rem;
+      font-weight: 900;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 3s ease-in-out infinite;
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.2rem;
+      font-weight: 300;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 30px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.8s ease-out forwards;
+      opacity: 0;
+    }
+
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .game-card:hover::before {
+      left: 100%;
+    }
+
+    .game-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .game-card h2 {
+      color: white;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .game-card p {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .btn {
+      background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+      border: none;
+      color: white;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 5px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(45deg, #ee5a52, #ff6b6b);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    }
+
+    .btn-secondary:hover {
+      background: linear-gradient(45deg, #44a08d, #4ecdc4);
+    }
+
+    .btn-success {
+      background: linear-gradient(45deg, #96ceb4, #7fb069);
+    }
+
+    .btn-success:hover {
+      background: linear-gradient(45deg, #7fb069, #96ceb4);
+    }
+
+    input, select, textarea {
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 16px;
+      color: white;
+      margin: 5px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #4ecdc4;
+      box-shadow: 0 0 20px rgba(78, 205, 196, 0.3);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .game-result {
+      color: #4ecdc4;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-top: 15px;
+      text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+      min-height: 1.5rem;
+    }
+
+    .mole-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-width: 250px;
+      margin: 20px auto;
+    }
+
+    .mole-hole {
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mole-hole:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .rps-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .rps-btn {
+      padding: 8px 12px;
+      font-size: 14px;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      border: none;
+      color: white;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .rps-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(45deg, #764ba2, #667eea);
+    }
+
+    .color-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .color-btn {
+      width: 60px;
+      height: 60px;
+      border: 3px solid white;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .color-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .flash-display {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .score-display {
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 15px 0;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes gradientShift {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    .animate-pulse {
+      animation: pulse 1s infinite;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .games-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .rps-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      
+      .game-card {
+        padding: 20px;
+      }
+    }
+
+    /* Animation delays for staggered entrance */
+    .game-card:nth-child(1) { animation-delay: 0.1s; }
+    .game-card:nth-child(2) { animation-delay: 0.2s; }
+    .game-card:nth-child(3) { animation-delay: 0.3s; }
+    .game-card:nth-child(4) { animation-delay: 0.4s; }
+    .game-card:nth-child(5) { animation-delay: 0.5s; }
+    .game-card:nth-child(6) { animation-delay: 0.6s; }
+    .game-card:nth-child(7) { animation-delay: 0.7s; }
+    .game-card:nth-child(8) { animation-delay: 0.8s; }
+    .game-card:nth-child(9) { animation-delay: 0.9s; }
+    .game-card:nth-child(10) { animation-delay: 1.0s; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="home.html">
+                <i class="fas fa-brain me-2"></i>Logic Matters
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="home.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="games.html">Scratch games</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="fr.html">"Om" Made games</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+
+
+
+  <div class="header">
+  <h1>🎮 Epic Game Collection</h1>
+  <p>Challenge yourself with these amazing mini-games!</p>
+</div>
+
+<div class="games-grid">
+
+  <!-- Game 1: Click Counter -->
+  <div class="game-card">
+    <h2>⚡ Click Counter Challenge</h2>
+    <p>How many clicks can you make in 5 seconds?</p>
+    <button class="btn" onclick="startClickGame()">Start Challenge</button>
+    <div class="score-display" id="click-count">Clicks: 0</div>
+  </div>
+
+  <!-- Game 2: Guess the Number -->
+  <div class="game-card">
+    <h2>🎯 Number Guesser</h2>
+    <p>Can you guess the secret number between 1-20?</p>
+    <input type="number" id="guess-input" min="1" max="20" placeholder="Enter your guess" />
+    <button class="btn btn-secondary" onclick="checkGuess()">Make Guess</button>
+    <div class="game-result" id="guess-result"></div>
+  </div
